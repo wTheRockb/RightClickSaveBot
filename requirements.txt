@@ -1,0 +1,7 @@
+tweepy
+requests
+requests_oauthlib
+python-dotenv
+requests-html
+psycopg2==2.8.6
+psycopg2-binary==2.8.6
