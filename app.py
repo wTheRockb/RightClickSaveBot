@@ -8,12 +8,14 @@ from requests_html import HTML
 from requests_html import HTMLSession
 from dotenv import load_dotenv
 import psycopg2
+from selenium import webdriver
+from webdriver_manager.chrome import ChromeDriverManager
+
 
 load_dotenv()
 
 
-SEARCH_URL = "https://opensea.io/assets?search[categories][0]=art&search[sortAscending]=false&search[" \
-             "sortBy]=FAVORITE_COUNT"
+SEARCH_URL = "https://opensea.io/assets?search[categories][0]=art&search[sortAscending]=false&search[sortBy]=FAVORITE_COUNT&search[toggles][0]=IS_NEW"
 BASE_ASSET_URL = "https://opensea.io"
 HEADERS = {'User-Agent': 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.11 (KHTML, like Gecko) Chrome/23.0.1271.64 Safari/537.11',
        'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8',
@@ -28,25 +30,27 @@ consumer_secret = os.environ.get("API_SECRET")
 def main():
     db_conn = init_db_conn()
     scrape_caption_and_save_file()
-    #post_to_twitter("1635907876084.jpg", "this is a test! hello world!")
 
-def scrape_caption_and_save_file(db_conn):
-    db_cur = db_conn.cursor()
-    html = requests.get(SEARCH_URL, headers=HEADERS)
-    # print(html)
-    html = HTML(html=html.text)
-    html.render()
-    # page = requests.get(SEARCH_URL, headers=HEADERS)
-    # soup = BeautifulSoup(page.content, 'html.parser')
-    print(html.links)
-    print(html.absolute_links)
-    grid_cells = html.find(".Asset--anchor")
-    print(len(grid_cells))
-    for cell in grid_cells:
-        
-        # if(!check_if_in_db(db_cur, X))
 
-        exit()
+def scrape_caption_and_save_file(db_conn): 
+    with db_cur as db_conn.cursor():
+        with webdriver.Chrome(
+            ChromeDriverManager().install(),
+            desired_capabilities=caps,
+            options=chrome_options,
+        ) as driver:
+            driver.get(SEARCH_URL)
+            driver.find_element_by_class_name()
+   
+
+            # grid_cells = html.find(".Asset--anchor")
+            # print(len(grid_cells))
+            # for cell in grid_cells:
+
+            #     # if(!check_if_in_db(db_cur, X))
+
+                exit()
+
 
 def check_if_in_db(db_cur, nft_id):
     cursor.execute(
