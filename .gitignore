@@ -1,6 +1,7 @@
 .env
 .idea/
 chromedriver
+screenshot.png
 venv
 current_nft.png
 RightClickSaveBot.iml

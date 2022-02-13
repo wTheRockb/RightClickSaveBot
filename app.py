@@ -31,6 +31,8 @@ chrome_options = Options()
 #chrome_options.add_argument("--headless")
 chrome_options.add_argument('--no-sandbox')
 ARTIST_NAME_SELECTOR = "jPSCbX"
+FILE_SIZE_LIMIT = 5242880
+DEBUG_MODE = False
 
 
 def main():
@@ -47,24 +49,33 @@ def scrape_caption_and_save_file(db_conn):
             driver.set_window_size(1920, 1080)
             driver.get(SEARCH_URL)
             wait = WebDriverWait(driver, 10)
-            driver.save_screenshot("screenshot.png")
+            if DEBUG_MODE: 
+                driver.save_screenshot("screenshot.png")
             wait.until(EC.presence_of_element_located((By.CLASS_NAME, "Asset--anchor")))
             items = driver.find_elements(By.CLASS_NAME, "Asset--anchor")
-            print("items found: ")
-            print(items)
             for i in items:
-                print(i.get_attribute("href"))
+                print(f"item href: {i.get_attribute('href')}")
                 nft_id = get_id_from_url(i.get_attribute("href"))
                 print(f"nft_id: {nft_id}")
-                if not check_if_in_db(db_cur, nft_id):
-                    download_image_in_element(i)
+                download_image_in_element(i)
+                if nft_passes_checks(db_cur, nft_id):
                     nft_name, artist_name, price = get_nft_info_from_element(i)
-                    print(nft_name)
-                    print(artist_name)
-                    print(price)
+                    print(f"nft_name: {nft_name}")
+                    print(f"artist_name: {artist_name}")
+                    print(f"price: {price}")
                     post_to_twitter(db_cur, db_conn, nft_id, nft_name, artist_name, price)
                     exit()
 
+
+def nft_passes_checks(db_cur, nft_id):
+    return  not check_if_in_db(db_cur, nft_id) and acceptable_file_size()
+
+
+def acceptable_file_size():
+    file_size = os.path.getsize(DOWNLOADED_IMAGE_URL)
+    print(f"file_size of nft printed below: {file_size}")
+
+    return file_size < FILE_SIZE_LIMIT
 
 def check_if_in_db(db_cur, nft_id):
     db_cur.execute(
