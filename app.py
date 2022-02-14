@@ -14,6 +14,7 @@ from selenium.webdriver.support.ui import WebDriverWait
 
 load_dotenv()
 
+## Constants
 SEARCH_URL = "https://opensea.io/assets?search[categories][0]=art&search[sortAscending]=false&search[sortBy]=FAVORITE_COUNT&search[toggles][0]=IS_NEW&search[toggles][1]=HAS_OFFERS"
 BASE_ASSET_URL = "https://opensea.io"
 ETH_PRICE_URI = "https://min-api.cryptocompare.com/data/price?fsym=ETH&tsyms=USD"
@@ -27,12 +28,15 @@ HEADERS = {
 DOWNLOADED_IMAGE_URL = "current_nft.png"
 consumer_key = os.environ.get("API_KEY")
 consumer_secret = os.environ.get("API_SECRET")
-chrome_options = Options()
-#chrome_options.add_argument("--headless")
-chrome_options.add_argument('--no-sandbox')
 ARTIST_NAME_SELECTOR = "jPSCbX"
 FILE_SIZE_LIMIT = 5242880
 DEBUG_MODE = False
+
+## Chrome options
+chrome_options = Options()
+#chrome_options.add_argument("--headless")
+chrome_options.add_argument('--no-sandbox')
+chrome_options.add_argument('--disable-dev-shm-usage')
 
 
 def main():
