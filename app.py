@@ -136,7 +136,7 @@ def post_to_twitter(db_cur, db_conn, nft_id, nft_name, artist_name, price):
     post_result = api.update_status(status=tweet, media_ids=[media.media_id])
     print(post_result)
     # tweet_url = ...
-    # save_nft_as_tweeted(db_cur, db_conn, nft_id, nft_name, artist_name, price, tweet_url)
+    save_nft_as_tweeted(db_cur, db_conn, nft_id, nft_name, artist_name, price, tweet_url)
 
 
 def format_twitter_caption(nft_name, artist_name, price):
