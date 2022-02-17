@@ -111,7 +111,7 @@ def save_nft_as_tweeted(db_cur, db_conn, nft_id, nft_name, artist_name, price, t
     db_cur.execute(
         """
         INSERT INTO tweets (nft_id, nft_name, artist_name, price, tweet_url, occurred_at) VALUES
-        (%s, %s, %s, %s, %s, %s, CURRENT_TIMESTAMP)
+        (%s, %s, %s, %s, %s, CURRENT_TIMESTAMP)
         """, [nft_id, nft_name, artist_name, price, tweet_url])
     db_conn.commit()
 
@@ -134,8 +134,7 @@ def post_to_twitter(db_cur, db_conn, nft_id, nft_name, artist_name, price):
     # Post tweet with image
     tweet = caption_text
     post_result = api.update_status(status=tweet, media_ids=[media.media_id])
-    print(post_result)
-    # tweet_url = ...
+    tweet_url = post_result.id
     save_nft_as_tweeted(db_cur, db_conn, nft_id, nft_name, artist_name, price, tweet_url)
 
 
@@ -159,8 +158,6 @@ def convert_from_eth_to_usd(ether):
     r = requests.get(ETH_PRICE_URI)
     data = r.json()
     eth_price = data["USD"]
-    # print(f"ether price: {eth_price}")
-    # print(f"ether: {ether} {type(ether)}")
     if ether:
         return round(float(ether) * eth_price, 2)
     else:
